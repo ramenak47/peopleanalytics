@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>People Analytics — A Knowledge Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f5f1e8;
+    --paper-2: #ede7d8;
+    --rule: #2a2a2a;
+    --accent: #b8412a;
+    --accent-2: #c97d3c;
+    --teal: #2d5e5e;
+    --olive: #6b6b3d;
+    --muted: #5c5749;
+    --soft: #fbf8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 17px;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(184, 65, 42, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(45, 94, 94, 0.04) 0%, transparent 40%);
+  }
+
+  .container { max-width: 920px; margin: 0 auto; padding: 60px 40px 120px; }
+
+  header.masthead {
+    border-bottom: 2px solid var(--rule);
+    padding-bottom: 28px;
+    margin-bottom: 50px;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .eyebrow .meta { color: var(--muted); }
+  h1.title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    font-style: italic;
+  }
+  h1.title strong { font-weight: 800; font-style: normal; }
+  .subtitle {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 22px;
+    max-width: 620px;
+    line-height: 1.55;
+  }
+
+  nav.toc {
+    background: var(--soft);
+    border: 1px solid rgba(26,26,26,0.12);
+    padding: 28px 32px;
+    margin: 50px 0;
+    border-radius: 2px;
+  }
+  nav.toc h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  nav.toc ol {
+    list-style: none;
+    counter-reset: toc;
+    columns: 2;
+    column-gap: 32px;
+  }
+  nav.toc ol li {
+    counter-increment: toc;
+    padding: 6px 0;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    break-inside: avoid;
+  }
+  nav.toc ol li::before {
+    content: counter(toc, decimal-leading-zero) " ";
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-right: 10px;
+  }
+  nav.toc a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted transparent;
+    transition: border-color 0.2s;
+  }
+  nav.toc a:hover { border-bottom-color: var(--accent); }
+
+  section { margin: 80px 0 0; scroll-margin-top: 40px; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(28px, 3.5vw, 36px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  h2 em { font-weight: 300; color: var(--muted); }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    margin: 40px 0 14px;
+    line-height: 1.25;
+  }
+  h3::before {
+    content: "§ ";
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  h4 {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--teal);
+    margin: 28px 0 12px;
+  }
+
+  p { margin-bottom: 18px; max-width: 70ch; }
+  p.lede {
+    font-size: 19px;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 28px;
+    max-width: 64ch;
+  }
+
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+  code, .term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86em;
+    background: var(--paper-2);
+    padding: 2px 7px;
+    border-radius: 2px;
+    color: var(--accent);
+  }
+
+  .callout {
+    background: var(--soft);
+    border-left: 3px solid var(--accent);
+    padding: 22px 28px;
+    margin: 28px 0;
+    border-radius: 0 2px 2px 0;
+  }
+  .callout.teal { border-left-color: var(--teal); }
+  .callout.olive { border-left-color: var(--olive); }
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .callout.teal .callout-label { color: var(--teal); }
+  .callout.olive .callout-label { color: var(--olive); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin: 24px 0;
+  }
+  .col-card {
+    background: var(--soft);
+    padding: 24px 26px;
+    border-radius: 2px;
+    border-top: 2px solid var(--teal);
+  }
+  .col-card h5 {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--teal);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .col-card p { font-size: 15px; line-height: 1.55; margin-bottom: 0; }
+
+  dl.definitions { margin: 22px 0; padding: 0; }
+  dl.definitions dt {
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--accent);
+    margin-top: 16px;
+    margin-bottom: 4px;
+  }
+  dl.definitions dd {
+    margin-left: 0;
+    margin-bottom: 8px;
+    padding-left: 18px;
+    border-left: 1px solid rgba(26,26,26,0.15);
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  ul.bullets, ol.numbered {
+    margin: 18px 0 22px;
+    padding-left: 0;
+    max-width: 70ch;
+  }
+  ul.bullets li {
+    list-style: none;
+    padding-left: 28px;
+    position: relative;
+    margin-bottom: 12px;
+  }
+  ul.bullets li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  ol.numbered { counter-reset: num; padding-left: 0; }
+  ol.numbered li {
+    list-style: none;
+    counter-increment: num;
+    padding-left: 38px;
+    position: relative;
+    margin-bottom: 14px;
+  }
+  ol.numbered li::before {
+    content: counter(num, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .table-wrapper {
+    margin: 28px 0;
+    overflow-x: auto;
+    border: 1px solid rgba(26,26,26,0.15);
+    border-radius: 2px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+  }
+  table thead { background: var(--ink); color: var(--paper); }
+  table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  table td {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(26,26,26,0.1);
+    vertical-align: top;
+  }
+  table tbody tr:nth-child(even) { background: rgba(26,26,26,0.025); }
+  table td:first-child {
+    font-weight: 600;
+    color: var(--teal);
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+  }
+
+  .knowledge-map {
+    background: var(--soft);
+    border: 1px solid rgba(26,26,26,0.12);
+    padding: 36px 32px;
+    margin: 30px 0;
+    border-radius: 2px;
+  }
+  .knowledge-map h4 { margin-top: 0; color: var(--accent); }
+
+  .wave-diagram {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 30px 0;
+  }
+  .wave {
+    padding: 20px 18px;
+    border-radius: 2px;
+    background: var(--soft);
+    border-top: 3px solid var(--olive);
+  }
+  .wave:nth-child(2) { border-top-color: var(--teal); }
+  .wave:nth-child(3) { border-top-color: var(--accent-2); }
+  .wave:nth-child(4) { border-top-color: var(--accent); background: var(--paper-2); }
+  .wave-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .wave h5 {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .wave p {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .acai-loop {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 28px 0;
+  }
+  .acai-step {
+    background: var(--paper-2);
+    padding: 22px 20px;
+    border-radius: 2px;
+    border-left: 3px solid var(--teal);
+  }
+  .acai-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .acai-step h5 {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .acai-step p {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .stat {
+    display: inline-block;
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 1.4em;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  footer {
+    margin-top: 120px;
+    padding-top: 30px;
+    border-top: 2px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 720px) {
+    .container { padding: 40px 24px 80px; }
+    nav.toc ol { columns: 1; }
+    .two-col { grid-template-columns: 1fr; }
+    h1.title { font-size: 40px; }
+    .wave-diagram { grid-template-columns: 1fr 1fr; }
+    .acai-loop { grid-template-columns: 1fr 1fr; }
+  }
+
+  blockquote {
+    border-left: 3px solid var(--olive);
+    margin: 32px 0;
+    padding: 14px 28px;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+  }
+  .flow-step {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 14px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .flow-arrow { color: var(--accent); font-weight: 600; }
+
+  .stakeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .stake-card {
+    background: var(--soft);
+    padding: 18px 22px;
+    border-radius: 2px;
+    border-top: 2px solid var(--accent);
+  }
+  .stake-card.internal { border-top-color: var(--teal); }
+  .stake-card .stake-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .stake-card.internal .stake-type { color: var(--teal); }
+  .stake-card h5 {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .stake-card p {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--muted);
+    margin: 0;
+  }
+  @media (max-width: 720px) {
+    .stakeholder-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="masthead">
+    <div class="eyebrow">
+      <span>People Analytics · Study Companion</span>
+      <span class="meta">MBA / UvA · v.2</span>
+    </div>
+    <h1 class="title">A network of <strong>knowledge</strong>,<br>not a stack of <em>answers</em>.</h1>
+    <p class="subtitle">A working map of the concepts, methods, and ethical commitments behind People Analytics as a field. Built to make any reasonable exam in this domain feel like familiar terrain rather than a surprise.</p>
+  </header>
+
+  <nav class="toc">
+    <h4>Contents</h4>
+    <ol>
+      <li><a href="#s1">What People Analytics is, what it is not</a></li>
+      <li><a href="#s2">The four waves and the ACAI spiral</a></li>
+      <li><a href="#s3">Stakeholders of value</a></li>
+      <li><a href="#s4">Diagnosing a business problem</a></li>
+      <li><a href="#s5">Variables, units, and measurement</a></li>
+      <li><a href="#s6">Statistical methods to recognise</a></li>
+      <li><a href="#s7">Confounding, mediation, moderation</a></li>
+      <li><a href="#s8">Visualisation for decisions</a></li>
+      <li><a href="#s9">Storytelling and persuasion</a></li>
+      <li><a href="#s10">Implementation challenges</a></li>
+      <li><a href="#s11">Ethics, proportionality, surveillance</a></li>
+      <li><a href="#s12">Resistance, Rynes et al., persuasion</a></li>
+      <li><a href="#s13">Futures of the field</a></li>
+      <li><a href="#s14">Wider intellectual surroundings</a></li>
+      <li><a href="#s15">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <p class="lede">The exam tests whether you think like a People Analytics practitioner under pressure. What follows is the load-bearing knowledge, organised so concepts reinforce each other rather than sit as a list of summaries to memorise.</p>
+
+  <!-- ============================================ -->
+  <section id="s1">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <h2>What People Analytics <em>is</em>, what it is <em>not</em></h2>
+    </div>
+
+    <p>People Analytics is the disciplined use of behavioural, operational, and HR data to test claims about how people drive organisational outcomes. The terminology is in flux. <strong>HR Analytics, Workforce Analytics, Talent Analytics, and People Analytics are often used interchangeably</strong>, and the distinction is more historical than substantive. &ldquo;Workforce Analytics&rdquo; emerged from software vendors in 1999. &ldquo;Talent Analytics&rdquo; appeared around 2006 with the rise of talent-management software. &ldquo;People Analytics&rdquo; was popularised around 2013 through Google&rsquo;s data-driven HR work.</p>
+
+    <p>The cleanest definition synthesises what the field <em>does</em> rather than which label it carries. People Analytics is <strong>a practice enabled by information technology that uses descriptive, visual, and statistical analyses of data related to HR processes, human capital, organisational performance, and external benchmarks to establish business impact and enable data-driven decision-making</strong>.</p>
+
+    <h3>HR Metrics vs HR Analytics</h3>
+    <p>This is the distinction worth getting right. <strong>HR metrics</strong> are measures of key HR outcomes — turnover rate, training hours, time-to-hire. They describe. <strong>HR Analytics</strong> goes further by using statistical techniques, experimental approaches, and cross-functional data to <em>establish business impact</em>. Counting how many people left is a metric. Asking which working conditions predict departure, and what that costs the firm, is analytics.</p>
+
+    <div class="callout teal">
+      <div class="callout-label">The shape of the field</div>
+      <p>People Analytics sits where HR data meets operations data meets behavioural science. Pure HR data is rarely enough. The strongest analyses cross system boundaries, joining engagement surveys to production output, scheduling to inventory, recruiting to performance. A practitioner who only looks at HR data alone is doing HR reporting, not People Analytics.</p>
+    </div>
+
+    <h3>Three families of question it answers</h3>
+    <dl class="definitions">
+      <dt>Workforce questions</dt>
+      <dd>Who do we have, who is leaving, who is engaged, who is being promoted? Demographics, turnover, engagement, mobility.</dd>
+      <dt>Performance questions</dt>
+      <dd>What predicts strong individual or team performance? How does staffing affect output? Where is productivity slipping and why?</dd>
+      <dt>System questions</dt>
+      <dd>Are HR policies (pay, training, scheduling, perks) producing the outcomes we intend, or unintended ones? This is where the most strategic work lives.</dd>
+    </dl>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s2">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <h2>The four waves and the ACAI spiral</h2>
+    </div>
+
+    <p>The textbook framing of analytics maturity comes in two flavours: a <strong>descriptive ladder</strong> (descriptive → diagnostic → predictive → prescriptive) and a <strong>strategic ladder</strong> (the four waves). Both matter, and they describe different things. The descriptive ladder is about what your analysis answers. The strategic ladder is about what your function is <em>for</em>.</p>
+
+    <h3>The descriptive ladder</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Level</th><th>Question</th><th>Typical Method</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Descriptive</td><td>What happened?</td><td>Counts, means, dashboards</td><td>Turnover rate last quarter</td></tr>
+          <tr><td>Diagnostic</td><td>Why did it happen?</td><td>Correlation, segmentation, regression</td><td>What variables co-move with turnover?</td></tr>
+          <tr><td>Predictive</td><td>What is likely next?</td><td>Regression, classification, ML</td><td>Who is at risk of leaving next quarter?</td></tr>
+          <tr><td>Prescriptive</td><td>What should we do?</td><td>Optimisation, simulation, experiments</td><td>What intervention reduces turnover cost-effectively?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>The four waves of People Analytics</h3>
+    <p>This is the strategic framing and it is exam-relevant. The field has historically moved through three waves and is now entering a fourth.</p>
+
+    <div class="wave-diagram">
+      <div class="wave">
+        <div class="wave-number">WAVE 01</div>
+        <h5>Benchmarking</h5>
+        <p>Comparing internal metrics to competitors or industry averages. Limit: being &ldquo;average&rdquo; does not differentiate.</p>
+      </div>
+      <div class="wave">
+        <div class="wave-number">WAVE 02</div>
+        <h5>Best Practices</h5>
+        <p>Mimicking industry leaders. Limit: another firm&rsquo;s best practice may not fit your context or create unique value.</p>
+      </div>
+      <div class="wave">
+        <div class="wave-number">WAVE 03</div>
+        <h5>Predictive</h5>
+        <p>Modelling outcomes from past HR practices. Limit: emphasises interpreting the past more than creating the future.</p>
+      </div>
+      <div class="wave">
+        <div class="wave-number">WAVE 04</div>
+        <h5>Guidance for Impact</h5>
+        <p>Prescriptive, stakeholder-centric. Answers the &ldquo;so that?&rdquo; question, guiding investments that produce value for all stakeholders.</p>
+      </div>
+    </div>
+
+    <p>The Fourth Wave is the conceptual upgrade. Earlier waves answer &ldquo;what happened&rdquo; or &ldquo;what is likely.&rdquo; The Fourth Wave demands that every analysis end with <em>&ldquo;so that&rdquo;</em>. We report training investments <em>so that</em> customer retention improves by X%. We model leadership development <em>so that</em> investor confidence increases. Without the &ldquo;so that,&rdquo; analytics becomes activity rather than impact.</p>
+
+    <h3>Push vs pull, and why the ladder is not linear</h3>
+    <p>The standard textbook view treats analytics maturity as a staircase: organisations climb from basic reporting to sophisticated prediction. Modern frameworks reject this linearity. For an analytics function to mature, organisations must balance <strong>push factors</strong> (technical capabilities and skills of the analytics team) with <strong>pull factors</strong> (organisational demand for data-driven insights).</p>
+
+    <div class="callout">
+      <div class="callout-label">The push/pull diagnosis</div>
+      <p>Investing heavily in advanced predictive capabilities without corresponding demand from business leaders produces sophisticated reports nobody acts on. Conversely, intense demand from leadership without technical capacity produces fast, sloppy answers. The interesting failures in real organisations are almost always push/pull imbalances, not method failures.</p>
+    </div>
+
+    <h3>The ACAI spiral</h3>
+    <p>If the four waves describe <em>where</em> the field is going, ACAI describes <em>how</em> a team gets there. Not a staircase, a spiral. Each loop educates the business, raises the level of questions being asked, and matures the function.</p>
+
+    <div class="acai-loop">
+      <div class="acai-step">
+        <div class="acai-letter">A</div>
+        <h5>Ask</h5>
+        <p>The right questions. Stakeholder-relevant, decision-attached, not just data-available.</p>
+      </div>
+      <div class="acai-step">
+        <div class="acai-letter">C</div>
+        <h5>Collect</h5>
+        <p>The right data. Linked to the question, minimum necessary, defensible in source.</p>
+      </div>
+      <div class="acai-step">
+        <div class="acai-letter">A</div>
+        <h5>Analyse</h5>
+        <p>The right way. Method matched to question, transparent about uncertainty.</p>
+      </div>
+      <div class="acai-step">
+        <div class="acai-letter">I</div>
+        <h5>Influence</h5>
+        <p>The right decisions. Findings translated, framed, and delivered to land action.</p>
+      </div>
+    </div>
+
+    <p>The cycle is iterative. Each completed loop changes what questions the business is capable of asking next. That is the maturity mechanism. Linear staircase models miss it because they assume capability builds in one direction; the spiral acknowledges that capability and organisational demand co-evolve.</p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s3">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <h2>Stakeholders of value</h2>
+    </div>
+
+    <p>Old-school HR analytics looked inward — at employees, at HR professionals, at internal process. The Fourth Wave pushes the field to identify <strong>stakeholders of value</strong>: the diverse groups, internal and external, who receive sustainable benefit from human-capital investments. The strategic question is no longer &ldquo;is our HR working?&rdquo; but &ldquo;is our HR producing value <em>for whom</em>, and is that the right whom?&rdquo;</p>
+
+    <p>The framework identifies seven key stakeholder groups. Knowing the list is exam-useful; knowing what each group <em>wants</em> is what makes the framework operational.</p>
+
+    <h3>External stakeholders</h3>
+    <div class="stakeholder-grid">
+      <div class="stake-card">
+        <div class="stake-type">External · Capital</div>
+        <h5>Investors</h5>
+        <p>Long-term confidence and reduction of investment risk. Analytics provides data on intangible value — leadership quality, culture — that goes beyond financial statements.</p>
+      </div>
+      <div class="stake-card">
+        <div class="stake-type">External · Market</div>
+        <h5>Customers</h5>
+        <p>Shared value through a positive relationship. Analytics shows how frontline-staff capability and engagement drive customer satisfaction and revenue per customer.</p>
+      </div>
+      <div class="stake-card">
+        <div class="stake-type">External · Social</div>
+        <h5>Communities</h5>
+        <p>Reputation and corporate citizenship. Analytics measures human-capital impact on community perception and social-responsibility outcomes.</p>
+      </div>
+    </div>
+
+    <h3>Internal stakeholders</h3>
+    <div class="stakeholder-grid">
+      <div class="stake-card internal">
+        <div class="stake-type">Internal · Workforce</div>
+        <h5>Employees</h5>
+        <p>An enhanced employee experience: capability, well-being, growth. The primary participants in HR practice.</p>
+      </div>
+      <div class="stake-card internal">
+        <div class="stake-type">Internal · Governance</div>
+        <h5>Board of Directors</h5>
+        <p>Oversight of the human-capital agenda, leadership accountability, cultural health.</p>
+      </div>
+      <div class="stake-card internal">
+        <div class="stake-type">Internal · Executive</div>
+        <h5>Senior Executives</h5>
+        <p>Prescriptive analytics to prioritise human-capital investments (hiring, training) that deliver strategic outcomes.</p>
+      </div>
+      <div class="stake-card internal">
+        <div class="stake-type">Internal · HR</div>
+        <h5>HR Professionals</h5>
+        <p>Architects of the human-capital agenda. Analytics moves them from administrative support to strategic partners by linking practice to business success.</p>
+      </div>
+    </div>
+
+    <div class="callout teal">
+      <div class="callout-label">The pivot it forces</div>
+      <p>Analytics must start with <em>stakeholder relevance</em> rather than data abundance. The framework reframes outcome variables: what each stakeholder values <em>is</em> the dependent variable. Human-capital initiatives (talent, leadership, culture) are then tested as independent variables, predicting the value that matters to whom. This re-orients the entire analytic enterprise from internal HR efficiency to external impact.</p>
+    </div>
+
+    <p>A practitioner who can name these seven groups and articulate what each wants has the conceptual structure for almost any &ldquo;why does HR matter strategically&rdquo; exam question.</p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s4">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <h2>Diagnosing a business problem</h2>
+    </div>
+
+    <p>Before any model, there is a translation step. A business problem (&ldquo;we are losing bottles&rdquo;, &ldquo;we are losing salespeople&rdquo;, &ldquo;our engagement scores dropped&rdquo;) has to become an analytical problem with a defined outcome, unit of analysis, and method. This is where most weak analyses go wrong: they jump to a method without specifying what they are measuring or why.</p>
+
+    <div class="knowledge-map">
+      <h4>From business question to analytical design</h4>
+      <div class="flow">
+        <div class="flow-step">Business problem</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Stakeholder value at stake</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Outcome variable</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Unit of analysis</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Candidate explanations</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Method</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Decision</div>
+      </div>
+      <p style="margin-top: 18px; font-size: 15px;">Each arrow is a defensible choice you should be able to justify. The board does not need to see your regression. They need to see that you knew what you were measuring and why.</p>
+    </div>
+
+    <h3>Specifying the outcome variable</h3>
+    <p>The most common error is treating a raw observable as the construct of interest. A &ldquo;missing bottles&rdquo; figure bundles breakage, scanning error, registered perks, and possible informal taking. A &ldquo;turnover rate&rdquo; bundles regretted and unregretted departures, voluntary and involuntary. A careful analyst constructs a <em>residual</em> after netting out what is already explained, and works on that.</p>
+
+    <div class="callout">
+      <div class="callout-label">Construct vs. measure</div>
+      <p>The <em>construct</em> you care about (informal leakage, regretted attrition, true engagement) is not the same as the <em>measure</em> you have (a number on a spreadsheet, a survey response). A serious analyst is upfront about this distance. Whatever moral story stakeholders read into the measure is a construct they import.</p>
+    </div>
+
+    <h3>Grouping explanatory variables</h3>
+    <p>Group them. It helps the reader and disciplines you. A reusable four-bucket grouping:</p>
+
+    <div class="two-col">
+      <div class="col-card">
+        <h5>Operational factors</h5>
+        <p>Process variables, equipment, throughput, downtime, error rates. The &ldquo;the system itself failed&rdquo; family.</p>
+      </div>
+      <div class="col-card">
+        <h5>Workforce factors</h5>
+        <p>Tenure, training, overtime, temp share, absence, shift. The &ldquo;the people composition matters&rdquo; family.</p>
+      </div>
+      <div class="col-card">
+        <h5>Policy / system factors</h5>
+        <p>Compliance, registered perks, formal procedures. The &ldquo;the rules-of-the-game&rdquo; family.</p>
+      </div>
+      <div class="col-card">
+        <h5>Context factors</h5>
+        <p>Time, season, product type, customer pressure, market conditions. Controls that let you compare like with like.</p>
+      </div>
+    </div>
+
+    <h3>The relationships worth investigating</h3>
+    <ul class="bullets">
+      <li>Main effects: does each factor predict the outcome?</li>
+      <li>Interactions: does the effect of one factor depend on the level of another?</li>
+      <li>Nested patterns: are some units structurally worse, or worse because of the workload they handle?</li>
+      <li>Residual analysis: after legitimate sources are accounted for, is there still an unexplained signal?</li>
+    </ul>
+
+    <h3>What additional data would help</h3>
+    <p>An exam-strong answer always considers what would <em>improve</em> the analysis. Useful additions typically include: timestamped automated data (heavy ethical cost), instrument calibration logs, supplier or process tolerances, employee survey data on perceived fairness, comparable benchmarks from other firms, baseline data from before the problem emerged. The point is to show that <em>more data is not always better</em>: each addition carries privacy, cost, and interpretive baggage.</p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s5">
+    <div class="section-header">
+      <div class="section-number">05</div>
+      <h2>Variables, units, and measurement</h2>
+    </div>
+
+    <p>You should be fluent in classifying variables because the classification dictates which methods are legal.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Type</th><th>Description</th><th>Typical examples</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Categorical (nominal)</td><td>Labels without order</td><td>Department, location, role</td></tr>
+          <tr><td>Categorical (ordinal)</td><td>Labels with order</td><td>Job level, Likert-scale agreement</td></tr>
+          <tr><td>Continuous</td><td>Real-valued, any number in a range</td><td>Salary, tenure, percentages</td></tr>
+          <tr><td>Count</td><td>Non-negative integers</td><td>Number of absences, requisitions filled</td></tr>
+          <tr><td>Binary</td><td>Two-state outcome</td><td>Left or stayed, promoted or not</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Unit of analysis</h3>
+    <p>What does one row of your data represent? An employee? A shift? A team-month? The unit of analysis disciplines how strong your conclusions can be. Claims at the aggregate level cannot be assumed to hold at the individual level, and vice versa.</p>
+
+    <div class="callout olive">
+      <div class="callout-label">The ecological fallacy</div>
+      <p>Drawing conclusions about individuals from aggregate-level data is called the <em>ecological fallacy</em>. If teams with more temp workers have lower output, this does <em>not</em> mean individual temp workers are responsible. The aggregate pattern is consistent with many individual stories. One of the most common reasoning errors in workplace analytics.</p>
+    </div>
+
+    <h3>The say–do gap</h3>
+    <p>HR analytics over-relies on self-reported survey data — engagement surveys, pulse surveys, exit interviews. These are highly susceptible to the <strong>say–do gap</strong>: what employees report does not always match what they do. An employee who reports high engagement may already be interviewing elsewhere. A serious analyst triangulates: survey data alongside behavioural data (attendance, output, internal moves) alongside outcome data. No single source is enough.</p>
+
+    <h3>Sample size and statistical power</h3>
+    <p>What looks like &ldquo;lots of data&rdquo; thins quickly when split by relevant subgroups. <span class="stat">600</span> shift observations divided across 3 lines × 3 shifts × multiple products × multiple months produces small cells. Effect estimates in small cells are noisy and confidence intervals widen. Be alert to claims that emerge only in narrow intersections.</p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s6">
+    <div class="section-header">
+      <div class="section-number">06</div>
+      <h2>Statistical methods to recognise</h2>
+    </div>
+
+    <p>You will not derive anything. You need to name the right tool for the job and explain what it tells you.</p>
+
+    <h3>Descriptive statistics</h3>
+    <p>Means, medians, standard deviations, percentages, distributions. Always the first step. If a pattern only emerges in a regression and not in the descriptives, be suspicious. Descriptive tables and plots tell you whether the question is even worth modelling.</p>
+
+    <h3>Correlation</h3>
+    <p>Pearson&rsquo;s <em>r</em> measures whether two continuous variables move together, bounded between &minus;1 and 1. The cheapest diagnostic available. Correlation is not causation: two variables can move together because one causes the other, because both are caused by a third (confounding), or by chance.</p>
+
+    <h3>Group comparisons</h3>
+    <p>Comparing means across groups uses the <em>t-test</em> (two groups) or <em>ANOVA</em> (three or more). The result is a p-value: a statement about how surprising the data would be under a null hypothesis of no effect, <em>not</em> a statement about practical importance.</p>
+
+    <h3>Linear regression</h3>
+    <p>The workhorse. You model an outcome <em>y</em> as a weighted sum of predictors plus error. Each coefficient is the expected change in <em>y</em> for a one-unit change in that predictor, <strong>holding the others constant</strong>. That &ldquo;holding constant&rdquo; phrase does the moral work of the whole exercise.</p>
+
+    <div class="callout teal">
+      <div class="callout-label">Read coefficients carefully</div>
+      <p>A regression coefficient is a statement about <em>this dataset</em> and <em>this model specification</em>. Add or drop a variable and coefficients can flip sign. This is not a bug, it is the geometry of conditional relationships. Robustness checks — running multiple model specifications — are how analysts stress-test conclusions.</p>
+    </div>
+
+    <h3>Logistic regression</h3>
+    <p>When the outcome is binary (left vs stayed, promoted vs not), linear regression is not appropriate. Logistic regression models the log-odds of the outcome. Coefficients translate to odds ratios. The underlying logic — predictors explaining variation in the outcome conditional on other predictors — is the same.</p>
+
+    <h3>Multilevel / hierarchical models</h3>
+    <p>HR data is almost always nested: employees within teams, teams within units, observations within time periods. Standard regression assumes independence between observations. Multilevel models account for nested structure by allowing intercepts (and sometimes slopes) to vary by group. Mentioning multilevel models on an exam is a signal of statistical sophistication.</p>
+
+    <h3>Experimental and quasi-experimental designs</h3>
+    <p>The gold standard for causal inference is the randomised experiment (A/B test, randomised controlled trial). Where randomisation is impossible, quasi-experimental methods (difference-in-differences, regression discontinuity, instrumental variables) approximate it. People Analytics is mostly observational, which limits how strongly causal language can be used.</p>
+
+    <h3>What you would not do</h3>
+    <p>You would not jump to neural networks or random forests for a small, interpretable HR question. People Analytics rewards interpretability: the audience needs to understand the result, not just believe it. Black-box models also expose you to algorithmic-bias risks that interpretable models surface earlier.</p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s7">
+    <div class="section-header">
+      <div class="section-number">07</div>
+      <h2>Confounding, mediation, moderation</h2>
+    </div>
+
+    <p>These three words separate careful analysts from sloppy ones. Each is a different relationship between three or more variables. Confusing them produces wrong recommendations.</p>
+
+    <dl class="definitions">
+      <dt>Confounding</dt>
+      <dd>A third variable causes both the predictor and the outcome, creating a false impression that the predictor causes the outcome. Example: senior employees both earn more <em>and</em> have higher performance ratings. Tenure is a confounder for the salary–performance link.</dd>
+      <dt>Mediation</dt>
+      <dd>The predictor causes a second variable, which causes the outcome. The mediator is the mechanism. Example: high overtime → fatigue → lower output. Overtime affects output <em>through</em> fatigue. Knowing the mediator tells you where to intervene.</dd>
+      <dt>Moderation (interaction)</dt>
+      <dd>The effect of one predictor on the outcome depends on the level of another. Example: training only improves performance when managers actively support it. The relationship is conditional. Moderation explains why a single intervention can produce wildly different results across teams.</dd>
+    </dl>
+
+    <blockquote>
+      &ldquo;Correlation is not causation&rdquo; is a slogan. The discipline is naming, before you run anything, which of these three relationships you think is operating, and what would distinguish them in your data.
+    </blockquote>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s8">
+    <div class="section-header">
+      <div class="section-number">08</div>
+      <h2>Visualisation for decisions</h2>
+    </div>
+
+    <p>A chart for executives does three things: it makes the central pattern visible without explanation, it is honest about uncertainty, and it points the eye at the lever the audience can pull. Visualisation is not decoration. It is an argument for an action.</p>
+
+    <h3>Match the chart to the message</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Goal</th><th>Chart type</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Show ranking</td><td>Horizontal bar chart</td><td>Easy comparison of magnitudes across categories</td></tr>
+          <tr><td>Show distribution</td><td>Boxplot, histogram</td><td>Reveals spread, outliers, skew</td></tr>
+          <tr><td>Show change over time</td><td>Line chart</td><td>Trends and inflection points</td></tr>
+          <tr><td>Show two-variable relationship</td><td>Scatter with fit line</td><td>Linear or nonlinear association</td></tr>
+          <tr><td>Show interaction</td><td>Small multiples, or heatmap</td><td>How the effect of A depends on the level of B</td></tr>
+          <tr><td>Show decomposition</td><td>Stacked or waterfall chart</td><td>How a total breaks into components</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Preattentive attributes</h3>
+    <p>Human short-term memory processes about four chunks of visual information at a time. Good visuals reduce cognitive load by leveraging <strong>preattentive attributes</strong> — features the brain processes before conscious attention engages. The most powerful are <em>size</em>, <em>colour</em>, <em>spatial position</em>, and <em>line width</em>. Designed well, these direct the audience&rsquo;s attention before they realise they are looking.</p>
+
+    <div class="callout">
+      <div class="callout-label">On colour, specifically</div>
+      <p>Colour should never be used to make a chart &ldquo;colourful.&rdquo; A rainbow palette prevents any single data point from standing out — everything competes for attention. Better: design in muted tones (grey) and use a single bold colour to draw the eye exactly to the data point that supports your narrative. Avoid red/green combinations, which fail for colour-blind viewers; rely on saturation contrast instead.</p>
+    </div>
+
+    <h3>The Z-pattern and prime real estate</h3>
+    <p>Audiences scan pages in a zigzag &ldquo;Z&rdquo; pattern starting from the top left. The most important information should be positioned in that prime real estate. The bottom right is the last place the eye lands — useful for the call to action, weak for the key insight.</p>
+
+    <h3>Channels of encoding</h3>
+    <p>Tamara Munzner&rsquo;s rule of thumb: <em>position</em> is the most accurate visual encoding (used in scatter plots and bar charts). <em>Length</em> is next. <em>Colour intensity</em> is among the weakest channels for quantitative data — the brain is bad at translating shade differences into magnitudes. Use position for the variable you care about most. Reserve colour for highlighting, not for quantifying.</p>
+
+    <h3>What the chart should support, decisionally</h3>
+    <p>This is the part students miss. A chart is an argument for an action. Before designing it, name the action it should support: a specific intervention, an investment, a policy change. If the chart cannot be linked to a decision, it is decoration and should be cut.</p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s9">
+    <div class="section-header">
+      <div class="section-number">09</div>
+      <h2>Storytelling and persuasion</h2>
+    </div>
+
+    <p>Elegant statistical insights are functionally useless if they cannot be understood and embraced by decision-makers. Moving analytics from <em>insight</em> to <em>impact</em> requires teams to leave behind conventional academic reporting and embrace storytelling, visual design, and psychological persuasion.</p>
+
+    <h3>Storytelling over conventional rhetoric</h3>
+    <p>Analysts often rely on bulleted facts, statistics, and complex tables. Business leaders are rarely moved to action by reason alone. Narratives reduce cognitive resistance, prevent counter-arguing, and increase long-term memory retention. The brain is built for stories more than for tables.</p>
+
+    <h3>The Three-Act Structure</h3>
+    <dl class="definitions">
+      <dt>Act 1 — The setup</dt>
+      <dd>Establish context and introduce the imbalance or conflict. What is the business problem, and why now?</dd>
+      <dt>Act 2 — The development</dt>
+      <dd>Develop the tension. What are the consequences of inaction? What data-backed options exist? This is where analysis lives.</dd>
+      <dt>Act 3 — The resolution</dt>
+      <dd>Resolve the tension with a specific call to action. Not &ldquo;here are some findings.&rdquo; A concrete, costed, owned proposal.</dd>
+    </dl>
+
+    <h3>Bing, Bang, Bongo</h3>
+    <p>The principle of repetition. Tell them what you are going to tell them (executive summary). Tell them (detailed content). Tell them what you told them (closing summary). Audiences in long meetings retain only a fraction of what is said. The repetition is not condescension. It is how memory consolidation works under conditions of competing attention.</p>
+
+    <h3>The One-Slide approach</h3>
+    <p>Decision-makers rarely care about the granularity of statistical methods. Reduce findings to one slide: the proposed intervention, the cost, the expected impact on stakeholder value. Use intuitive analogies. Trade technical accuracy for communicative force, with full documentation available for those who want to dive deeper.</p>
+
+    <h3>Structuring presentations with logic</h3>
+    <dl class="definitions">
+      <dt>Horizontal logic</dt>
+      <dd>Slide titles should be <em>action titles</em>, not descriptive labels. A reader should be able to skim only the titles from start to end and follow the entire story. &ldquo;Q4 results&rdquo; is a label. &ldquo;Turnover dropped 18% after the manager-training pilot&rdquo; is a horizontal-logic title.</dd>
+      <dt>Vertical logic</dt>
+      <dd>Within a single slide, everything must reinforce the title. Text supports the title. Visualisations support the text. Nothing extraneous. If something does not support the title, it leaves the slide.</dd>
+    </dl>
+
+    <h3>Anticipating resistance</h3>
+    <p>People resist data that threatens their beliefs, identities, or interests. Bombarding a resistant audience with more facts makes them dig in. Two techniques work better.</p>
+
+    <dl class="definitions">
+      <dt>Two-sided arguments</dt>
+      <dd>For contentious findings, actively present the opposing arguments and then refute them with the best available evidence. A one-sided presentation reads as advocacy; a two-sided one reads as honesty and is harder to dismiss.</dd>
+      <dt>Jiu-jitsu persuasion</dt>
+      <dd>Rather than attacking a stakeholder&rsquo;s surface attitude, identify the underlying motivation or fear driving their resistance. Align the data&rsquo;s message with that underlying motivation. The conversation shifts from zero-sum conflict to a collaborative &ldquo;both-and&rdquo; solution. Named after the martial-arts principle of using an opponent&rsquo;s momentum rather than opposing it directly.</dd>
+    </dl>
+
+    <div class="callout teal">
+      <div class="callout-label">The point about persuasion</div>
+      <p>Communication is not the last step of an analysis. It shapes whether analysis becomes action. A statistically perfect finding that no one acts on has produced zero value. A modest finding that produces a real decision has produced real value. The communication step is not auxiliary. It <em>is</em> the value-creation step.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s10">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>Implementation challenges</h2>
+    </div>
+
+    <p>The literature is consistent on what stops People Analytics from delivering value. The challenges cluster into six families, and a strong exam answer will name several of them.</p>
+
+    <h3>1. The skills gap and function hijacking</h3>
+    <p>The most cited barrier. Less than a third of HR analytics professionals report competency in advanced multivariate statistics. When HR cannot do the analytics, responsibility migrates to IT or Finance. Those functions often misunderstand human capital — treating labour as a fixed cost to be controlled rather than a flexible, value-producing resource. The analytical lens determines the answers; if Finance owns the lens, the answers are financial.</p>
+
+    <h3>2. Misplaced focus and low-value analytics</h3>
+    <p>Many teams stay stuck in basic reporting. A common figure: People Analytics teams spend <span class="stat">80%</span> or more of their time on routine reports (headcount, turnover, training hours) rather than the strategic &ldquo;so what?&rdquo; questions that deliver value. Teams analyse data because they have it — building &ldquo;warehouses of data&rdquo; without business impact — or pursue academically rigorous work that is managerially irrelevant because analysts are isolated from business leaders. The corrective is the courage to say <em>no</em> to low-value requests and free the team from operational reporting.</p>
+
+    <h3>3. Data quality and technological limitations</h3>
+    <p>HCM systems and IT infrastructure that are meant to enable analytics often impede it. Data is siloed, inaccurate, or poorly integrated across regions and business functions. Over-reliance on subjective self-reported survey data produces the say–do gap. Behavioural and outcome data — what people actually do, what actually results — are harder to capture but more truthful.</p>
+
+    <h3>4. The push/pull imbalance</h3>
+    <p>Already discussed in §02. Investing in advanced predictive capabilities when the organisation does not demand them produces sophisticated unread reports. Conversely, intense demand without capacity produces fast wrong answers. The interesting failures are imbalances, not method failures.</p>
+
+    <h3>5. Managerial resistance and algorithmic aversion</h3>
+    <p>Two distinct phenomena often confused.</p>
+    <dl class="definitions">
+      <dt>Stubborn reliance on intuition</dt>
+      <dd>Managers reject validated research (for instance, that structured interviews and cognitive tests predict job performance far better than unstructured interviews) because the evidence threatens autonomy, self-image, or interests. This is the Rynes et al. terrain (§12).</dd>
+      <dt>Algorithmic aversion</dt>
+      <dd>Specifically the distrust of <em>algorithmic</em> recommendations. Employees and managers often view human judgement as fairer or more genuine than algorithmic output, even when the algorithm is empirically more accurate. Aversion also reflects rational fear that algorithms will be used for surveillance, deskilling, or job elimination. Worth distinguishing from general resistance to evidence: aversion is targeted at the form (machine) as much as the substance.</dd>
+    </dl>
+
+    <h3>6. Ethical risks and baked-in bias</h3>
+    <p>The most consequential category. Models trained on historical data inherit the biases of that history. A predictive model of &ldquo;leadership potential&rdquo; trained on the firm&rsquo;s past leadership will conclude that the demographic profile of past leaders (typically: men, typically: a narrow ethnic and educational profile) <em>is</em> the leadership profile. The model launders historical discrimination into the appearance of objectivity. Without theoretical grounding and ethical oversight, the model scales bias rather than reducing it. Section 11 develops this further.</p>
+
+    <div class="callout olive">
+      <div class="callout-label">The implementation diagnosis</div>
+      <p>When a People Analytics function is failing, the failure is almost never the methods. It is one of: insufficient skills, the wrong questions, broken data plumbing, push/pull imbalance, audience resistance, or unaddressed ethical risk. Name the actual failure mode before prescribing a fix.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s11">
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <h2>Ethics, proportionality, surveillance</h2>
+    </div>
+
+    <p>This is the section to take seriously. The political-economic stakes of People Analytics are not adjacent to the technical work — they shape what the technical work means.</p>
+
+    <h3>The core ethical frame</h3>
+    <dl class="definitions">
+      <dt>Legitimate purpose</dt>
+      <dd>Is the question one the organisation has a defensible reason to ask? &ldquo;Are we losing inventory?&rdquo; is legitimate. &ldquo;Which individual employees are insufficiently loyal?&rdquo; is not.</dd>
+      <dt>Proportionality</dt>
+      <dd>Is the intrusion into employee life proportional to the magnitude of the problem? A modest unexplained gap does not justify constant surveillance. The means must match the size of the end.</dd>
+      <dt>Fairness and non-discrimination</dt>
+      <dd>Will the analysis produce conclusions that disproportionately harm a vulnerable or protected group? Temp workers, junior employees, and minorities are typically more precarious. A finding that correlates these groups with negative outcomes can quickly become a hiring rule that punishes people for being in those categories.</dd>
+    </dl>
+
+    <h3>GDPR and the European context</h3>
+    <p>In the Netherlands and across the EU, employee data is governed by the GDPR. Principles worth naming:</p>
+    <ul class="bullets">
+      <li><strong>Lawful basis</strong>: processing must rest on a defined legal basis. Employee consent is contested as a basis because the power imbalance makes consent unreliable.</li>
+      <li><strong>Purpose limitation</strong>: data collected for one purpose (scheduling) cannot be repurposed (investigation of individuals) without justification.</li>
+      <li><strong>Data minimisation</strong>: only data necessary for the stated purpose should be collected.</li>
+      <li><strong>Transparency</strong>: employees should know what is being analysed and why.</li>
+      <li><strong>Works council consultation</strong>: in the Dutch context, the Ondernemingsraad must typically be consulted on significant uses of employee data.</li>
+    </ul>
+
+    <h3>Baked-in bias and the historical-data problem</h3>
+    <p>A model that predicts leadership potential from past leaders learns the demographic shape of the past, not the structure of leadership. Without intervention, it scales discrimination. The Amazon recruiting tool that learned to downweight CVs containing the word &ldquo;women&rsquo;s&rdquo; is the canonical case. The lesson is not that algorithms are uniquely biased — humans were already biased, which is why the training data looks the way it does. The lesson is that algorithms scale existing bias to a level of efficiency previously impossible.</p>
+
+    <h3>The framing problem</h3>
+    <p>How you label a finding matters as much as what you find. &ldquo;Missing units are concentrated on Line C&rdquo; is a description. &ldquo;Line C workers are stealing&rdquo; is an accusation, and one the data typically does not support. A responsible analyst refuses the loaded label and chooses the structural framing.</p>
+
+    <div class="callout olive">
+      <div class="callout-label">From a critical perspective</div>
+      <p>Workplace analytics descends in part from Taylorist scientific management and from older traditions of surveillance over labour. The HR analytics literature tends to present itself as neutral and technocratic, but the framing &ldquo;are employees disloyal?&rdquo; is structurally different from &ldquo;is our process working?&rdquo; The first individualises a structural issue. The second locates accountability at the system level. Choosing the second is itself an ethical decision.</p>
+    </div>
+
+    <h3>What responsible practice looks like</h3>
+    <ul class="bullets">
+      <li>Investigate at the system level first (process, training, compliance, policy clarity) before individualising.</li>
+      <li>Aggregate and anonymise. Never report at individual level unless there is specific cause and due process.</li>
+      <li>Consult employee representatives before extending data collection.</li>
+      <li>Audit predictive models for disparate impact before deployment, and again periodically after.</li>
+      <li>Be transparent with staff about what was found and what is changing. This is a labour-relations question as much as an analytics question.</li>
+      <li>Refuse low-value, high-intrusion analyses. The most ethical decision is sometimes to not run the analysis at all.</li>
+    </ul>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s12">
+    <div class="section-header">
+      <div class="section-number">12</div>
+      <h2>Resistance, Rynes et al., persuasion</h2>
+    </div>
+
+    <p>Rynes, Colbert &amp; O&rsquo;Boyle (2018) sit at the centre of a recurring exam concern: the &ldquo;research–practice gap.&rdquo; The core observation is that managers routinely ignore or reject evidence-based findings even when the evidence is robust. The article diagnoses why, and proposes strategies for closing the gap.</p>
+
+    <h3>Why managers resist evidence</h3>
+    <dl class="definitions">
+      <dt>Cognitive reasons</dt>
+      <dd>Confirmation bias (seeking information that confirms what we already believe); availability bias (vivid anecdotes outweigh statistics); the seduction of intuition built from personal experience that does not generalise.</dd>
+      <dt>Motivational reasons</dt>
+      <dd>Findings can threaten identity (&ldquo;I have been doing this wrong for twenty years?&rdquo;), challenge status, or imply costly change. Resistance is often emotional before it is intellectual.</dd>
+      <dt>Structural reasons</dt>
+      <dd>Managers face time pressure, lack training in research methods, may distrust academics, and operate under career incentives that reward decisiveness over reflection.</dd>
+      <dt>Communication reasons</dt>
+      <dd>Researchers often present findings in jargon-heavy, hedged language that does not travel to managerial audiences. Evidence loses on form before it is judged on substance.</dd>
+    </dl>
+
+    <h3>Strategies Rynes and colleagues recommend</h3>
+    <ol class="numbered">
+      <li><strong>Anticipate which findings will be resisted.</strong> Findings that contradict popular practice, threaten autonomy, or imply costly change face more resistance.</li>
+      <li><strong>Translate into the language of practice.</strong> Avoid jargon. Use vivid examples and concrete numbers managers can act on.</li>
+      <li><strong>Address self-interest and identity.</strong> Frame findings so they do not require managers to admit personal failure. Locate causes in systems, not individuals.</li>
+      <li><strong>Use credible messengers.</strong> Peer managers and respected internal voices persuade better than analytics teams. Build coalitions.</li>
+      <li><strong>Build evidence-based mindsets through repeated exposure.</strong> One presentation will not convert a sceptic. Embedded routine shifts norms over time.</li>
+      <li><strong>Acknowledge uncertainty honestly</strong>, without abandoning the conclusion. Candour about limitations builds credibility.</li>
+      <li><strong>Tie evidence to actual decisions.</strong> Generic findings drift. Findings attached to a live decision land.</li>
+    </ol>
+
+    <div class="callout teal">
+      <div class="callout-label">The deeper point</div>
+      <p>Rynes et al. are not saying managers are irrational. They are saying that the conditions under which managers receive and use evidence are not the conditions under which evidence is produced. Closing the gap is a translation problem, an institutional problem, and a relational problem — not just a data problem.</p>
+    </div>
+
+    <h3>Connecting Rynes to storytelling and jiu-jitsu persuasion</h3>
+    <p>Section 09 introduced storytelling and jiu-jitsu persuasion as techniques. They are not separate from Rynes — they are the operational toolkit for what Rynes recommends. Anticipating resistance means designing communication that uses two-sided arguments, peer messengers, action-titled slides, decomposition charts that locate causes structurally, and language that aligns with the audience&rsquo;s underlying motivations. The intellectual diagnosis (Rynes) and the practical techniques (storytelling, jiu-jitsu) are the same project.</p>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s13">
+    <div class="section-header">
+      <div class="section-number">13</div>
+      <h2>Futures of the field</h2>
+    </div>
+
+    <p>Where People Analytics is going. Useful for exam questions framed in terms of &ldquo;what next&rdquo; or &ldquo;how should organisations prepare.&rdquo; Five themes recur in the literature.</p>
+
+    <h3>1. The move to Guidance for Impact</h3>
+    <p>The Fourth Wave is the field&rsquo;s strategic direction. Every analysis should end with &ldquo;so that.&rdquo; Report training investment <em>so that</em> customer retention rises X%. Model leadership development <em>so that</em> investor confidence increases. Without the &ldquo;so that,&rdquo; analytics remains activity rather than impact. Value will increasingly be measured by impact on external stakeholders (investors, customers, communities) and senior internal leadership (boards, executives), not just HR professionals.</p>
+
+    <h3>2. AI and the duality of digital</h3>
+    <p>AI and generative technologies are the primary driver of change. Two dynamics:</p>
+    <dl class="definitions">
+      <dt>Doing digital — automation</dt>
+      <dd>AI automates repetitive administrative tasks (CV screening at scale, scheduling, basic reporting). This is efficiency work.</dd>
+      <dt>Being digital — augmentation</dt>
+      <dd>AI augments human capability by freeing professionals from low-value work, letting them focus on higher-value strategic work. This is leverage work.</dd>
+    </dl>
+    <p>The exam-relevant tension is <strong>algorithmic aversion</strong>: stakeholders often distrust AI-driven insights even when those insights are more accurate, viewing human judgement as fairer or more genuine. Managing this aversion is itself a People Analytics problem.</p>
+
+    <h3>3. The impermanence of work</h3>
+    <p>Traditional HR analytics measured permanent employees. Work is increasingly project-based, freelance, gig-based, contractor-heavy. Analytics must shift accordingly.</p>
+    <ul class="bullets">
+      <li>Project-based focus: tracking competencies, performance, and availability across a flexible talent pool rather than headcount in fixed roles.</li>
+      <li>Nimble modelling: real-time supply/demand matching, more sophisticated econometric models, faster cycle times.</li>
+      <li>New ethical questions: gig workers typically have weaker legal protections than employees, raising the stakes of how their data is used.</li>
+    </ul>
+
+    <h3>4. Bridging the academic–practice gap</h3>
+    <p>The Rynes et al. agenda taken seriously. Two practical directions:</p>
+    <ul class="bullets">
+      <li><strong>Co-creation of research</strong>: practitioners contribute business problems, academics contribute method. Findings emerge that are both rigorous and actionable.</li>
+      <li><strong>Persuasive communication</strong>: against the broader cultural backdrop of declining trust in expertise (the &ldquo;death of expertise&rdquo;), analytics professionals must master storytelling and jiu-jitsu persuasion. Rigour without rhetoric loses.</li>
+    </ul>
+
+    <h3>5. Continuous maturation via the ACAI spiral</h3>
+    <p>The maturity model of the future is not a staircase. It is a spiral. Each loop of <em>Ask, Collect, Analyse, Influence</em> educates the organisation, raises the level of questions being asked, and matures the function. The analytics team&rsquo;s job is not only to answer questions but to <em>cultivate the demand for better questions</em>. This is what the literature means by &ldquo;educating the market.&rdquo;</p>
+
+    <div class="callout">
+      <div class="callout-label">A synthesising line</div>
+      <p>The future of People Analytics is prescriptive, stakeholder-centric, AI-augmented, ethically constrained, and rhetorically sophisticated. A field that began counting headcount is becoming a field that guides human-capital investment toward differentiated, measurable value for multiple stakeholders. Most organisations are not yet doing this. The exam reward is in being able to describe why, and what would change it.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s14">
+    <div class="section-header">
+      <div class="section-number">14</div>
+      <h2>Wider intellectual surroundings <em>(beyond the exam)</em></h2>
+    </div>
+
+    <p>The exam tests a specific slice. A comfortable practitioner has the surrounding terrain in their head. Below is the landscape — knowing this means the exam feels like a familiar neighbourhood rather than a stress test.</p>
+
+    <h3>Where People Analytics came from</h3>
+    <p>Three intellectual streams converge. <em>Industrial-organisational psychology</em> contributed the measurement of work behaviour (job analysis, performance ratings, engagement). <em>Operations research and management science</em> contributed the optimisation lens (staffing, scheduling, supply chains). <em>Business analytics and data science</em> contributed the computational tooling. The synthesis is recent (largely post-2010) and uneasy. Each parent discipline has different norms for what counts as evidence and how to relate to workers.</p>
+
+    <h3>Scientific management as ancestor</h3>
+    <p>Frederick Taylor&rsquo;s <em>Principles of Scientific Management</em> (1911) is the deep ancestor of workforce analytics. Taylor decomposed work into measurable steps, timed them, and reorganised for output. The Hawthorne studies (1924&ndash;1932) at Western Electric pushed back, suggesting workers respond to being observed and that social dynamics matter. The tension between Taylor and Hawthorne — workers as measurable inputs vs. workers as social agents — runs straight through to current People Analytics debates.</p>
+
+    <h3>Evidence-based management</h3>
+    <p>The broader intellectual movement Rynes et al. belong to. Key figures: Denise Rousseau (her 2006 Academy of Management presidential address is foundational), Jeffrey Pfeffer and Robert Sutton (<em>Hard Facts, Dangerous Half-Truths, and Total Nonsense</em>). The core claim: management decisions should be informed by the best available scientific evidence, organisational facts, practitioner judgement, and stakeholder values — not by fashion or anecdote.</p>
+
+    <h3>Causal inference, briefly</h3>
+    <p>Most People Analytics work is observational, not experimental. Causal claims are precarious. The serious literature draws on Judea Pearl&rsquo;s work on directed acyclic graphs, Donald Rubin&rsquo;s potential outcomes framework, and quasi-experimental designs. You do not need to do these on the exam. You need to know they exist and that observational analyses without them produce weaker conclusions than experiments.</p>
+
+    <h3>Algorithmic fairness in HR</h3>
+    <p>A growing literature on what happens when algorithms make HR decisions. The Amazon recruiting tool that penalised &ldquo;women&rsquo;s&rdquo; on resumes is the canonical case. Frameworks: disparate impact vs disparate treatment, demographic parity vs equalised odds, the impossibility theorems showing you cannot satisfy all reasonable fairness criteria simultaneously. Cathy O&rsquo;Neil&rsquo;s <em>Weapons of Math Destruction</em> popularised the concerns.</p>
+
+    <h3>The labour-process tradition</h3>
+    <p>A counter-tradition reading workplace analytics as part of a longer history of managerial control over labour. Harry Braverman&rsquo;s <em>Labor and Monopoly Capital</em> (1974), Michael Burawoy&rsquo;s <em>Manufacturing Consent</em> (1979), more recent work by Karen Levy on truckers and Alex Rosenblat on Uber drivers. These authors do not deny that analytics works. They ask: works for whom, at whose expense, with what effect on the relationship between employer and employed?</p>
+
+    <h3>The metrics paradox</h3>
+    <p>Jerry Muller&rsquo;s <em>The Tyranny of Metrics</em> documents how measuring something often distorts the thing being measured (Goodhart&rsquo;s law: when a measure becomes a target, it ceases to be a good measure). Introduce a turnover target for managers and turnover will reliably drop — not because retention improves, but because reporting behaviour adapts. This is not cynicism. It is how complex systems respond to measurement.</p>
+
+    <h3>People Analytics maturity in practice</h3>
+    <p>Most organisations are stuck at descriptive analytics. Few make it to diagnostic. Genuine predictive and prescriptive work is rare, concentrated in large technology firms (Google&rsquo;s People Analytics team, the canonical &ldquo;Project Oxygen&rdquo; study on what makes managers effective). A typical mid-sized firm doing diagnostic work competently is already doing better than industry average.</p>
+
+    <h3>Key texts to know by name</h3>
+    <ul class="bullets">
+      <li>Boudreau &amp; Ramstad, <em>Beyond HR: The New Science of Human Capital</em> — the talentship framework, the idea that HR should think strategically about where talent makes the biggest difference.</li>
+      <li>Davenport, Harris &amp; Shapiro (HBR 2010), &ldquo;Competing on Talent Analytics&rdquo; — the article that put People Analytics on the executive map.</li>
+      <li>Rasmussen &amp; Ulrich (2015), &ldquo;Learning from practice: how HR analytics avoids being a management fad&rdquo; — the warning that analytics teams must connect to actual business decisions.</li>
+      <li>Marler &amp; Boudreau (2017) — systematic review attempting to define what HR analytics actually is.</li>
+      <li>Tursunbayeva, Di Lauro &amp; Pagliari (2018) — broader systematic review of the field.</li>
+      <li>Rynes, Colbert &amp; O&rsquo;Boyle (2018) — the research–practice gap article.</li>
+      <li>Cole Nussbaumer Knaflic, <em>Storytelling with Data</em> — the practical reference for everything in §08 and §09.</li>
+    </ul>
+  </section>
+
+  <!-- ============================================ -->
+  <section id="s15">
+    <div class="section-header">
+      <div class="section-number">15</div>
+      <h2>Glossary</h2>
+    </div>
+
+    <p>Terms you should be able to deploy without hesitation.</p>
+
+    <dl class="definitions">
+      <dt>ACAI</dt>
+      <dd>Ask, Collect, Analyse, Influence. The iterative spiral that drives analytics-function maturity.</dd>
+      <dt>Algorithmic aversion</dt>
+      <dd>Distrust of algorithmic recommendations specifically (as opposed to general resistance to evidence). Often persists even when the algorithm is empirically more accurate than human judgement.</dd>
+      <dt>Bing, Bang, Bongo</dt>
+      <dd>The three-step communication structure: preview, deliver, summarise. Used to consolidate audience memory under conditions of competing attention.</dd>
+      <dt>Confounder</dt>
+      <dd>A third variable that affects both predictor and outcome, producing a spurious association.</dd>
+      <dt>Construct vs measure</dt>
+      <dd>The construct is what you care about (engagement, leakage). The measure is the variable you actually have. They are not the same.</dd>
+      <dt>Data minimisation</dt>
+      <dd>GDPR principle: only collect data necessary for the stated purpose.</dd>
+      <dt>Disparate impact</dt>
+      <dd>A practice neutral on its face that produces unequal outcomes across protected groups.</dd>
+      <dt>Ecological fallacy</dt>
+      <dd>Inferring individual-level relationships from group-level data.</dd>
+      <dt>Effect size vs statistical significance</dt>
+      <dd>Effect size is magnitude; significance is whether the result is unlikely under a null hypothesis. A significant tiny effect can be practically irrelevant.</dd>
+      <dt>Evidence-based management</dt>
+      <dd>The movement to ground managerial decisions in best available evidence rather than fashion or intuition.</dd>
+      <dt>Four Waves</dt>
+      <dd>Benchmarking → Best Practices → Predictive → Guidance for Impact. The strategic-purpose evolution of the analytics function.</dd>
+      <dt>Goodhart&rsquo;s law</dt>
+      <dd>When a measure becomes a target, it stops being a useful measure.</dd>
+      <dt>Guidance for Impact</dt>
+      <dd>The Fourth Wave. Prescriptive, stakeholder-centric analytics that answers the &ldquo;so that&rdquo; question.</dd>
+      <dt>Horizontal logic</dt>
+      <dd>Slide titles tell the story end-to-end. The deck should be readable from titles alone.</dd>
+      <dt>Jiu-jitsu persuasion</dt>
+      <dd>Aligning your message with the underlying motivation behind a stakeholder&rsquo;s resistance, rather than attacking the surface attitude.</dd>
+      <dt>Mediator</dt>
+      <dd>A variable on the causal path between predictor and outcome. The mechanism.</dd>
+      <dt>Moderator</dt>
+      <dd>A variable that changes the strength or direction of the relationship between predictor and outcome.</dd>
+      <dt>Multilevel model</dt>
+      <dd>A regression that accounts for the nested structure of data (employees within teams within units).</dd>
+      <dt>Operationalisation</dt>
+      <dd>The choice of how to translate a construct into a measurable variable. Always partial, always contestable.</dd>
+      <dt>Preattentive attributes</dt>
+      <dd>Visual features (size, colour, position, line width) that the brain processes before conscious attention. The currency of good data visualisation.</dd>
+      <dt>Push vs pull</dt>
+      <dd>Push: capability of the analytics team. Pull: organisational demand for evidence-based insight. Both must grow together for an analytics function to mature.</dd>
+      <dt>Purpose limitation</dt>
+      <dd>GDPR principle: data collected for one purpose cannot be repurposed without justification.</dd>
+      <dt>Research–practice gap</dt>
+      <dd>The persistent failure of robust academic findings to translate into managerial practice. Rynes et al. (2018) is the canonical reference.</dd>
+      <dt>Say–do gap</dt>
+      <dd>Self-reported attitudes do not match observed behaviour. The reason analytics should triangulate survey data with behavioural data.</dd>
+      <dt>Stakeholders of value</dt>
+      <dd>The seven groups (investors, customers, communities, employees, board, executives, HR) whose value defines the outcomes analytics should serve.</dd>
+      <dt>Three-Act Structure</dt>
+      <dd>Setup, development, resolution. The narrative spine of an effective analytical presentation.</dd>
+      <dt>Two-sided argument</dt>
+      <dd>Presenting opposing arguments and refuting them with evidence. More persuasive than one-sided advocacy for contested findings.</dd>
+      <dt>Vertical logic</dt>
+      <dd>Within a slide, everything supports the title. Text supports title, visualisation supports text. No extraneous content.</dd>
+      <dt>Z-pattern</dt>
+      <dd>Audiences scan pages in a zigzag &ldquo;Z&rdquo; starting top-left. Put the most important information in prime real estate.</dd>
+    </dl>
+  </section>
+
+  <footer>
+    <div>People Analytics · Study Companion</div>
+    <div>v.2 · expanded knowledge network</div>
+  </footer>
+
+</div>
+</body>
+</html>
